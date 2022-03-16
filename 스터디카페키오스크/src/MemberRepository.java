@@ -148,7 +148,45 @@ public class MemberRepository {
 		return a;
 	}
 
+	public int checkMemberSeat(String phoneNumber) {
+		int a = -1;
+		String query = "select selectedSeat from member where phonenumber = ?";
+		try (Connection conn = ConnectionProvider.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(query);) {
+			stmt.setString(1, phoneNumber);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				a = rs.getInt("selectedseat");
+			}
+			return a;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return a;
+
+	}
+
+	public int checkTicket(String phoneNumber) {
+		String query = "select ticket_period from member where phonenumber = ?";
+		int length = 0;
+		try (Connection conn = ConnectionProvider.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(query);) {
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				length = rs.getInt("ticket_period");
+
+			}
+			return length;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return length;
+
+	}
+
 	public void deleteMember() {
-		String query = "select DATE_ADD(startdate, INTERVAL ticket_Period DAY) from member ;";
+		String query = "delete * from memeber where ((select dateDiff(select DATE_ADD(startdate, INTERVAL ticket_Period DAY) , now())) < 0 );";
 	}
 }

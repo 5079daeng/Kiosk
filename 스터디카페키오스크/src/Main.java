@@ -30,98 +30,8 @@ import java.awt.Font;
 
 class kiosk extends JFrame {
 
-//	int count;
-//	static CardLayout card = new CardLayout();
-//	static JPanel forContents = new JPanel(card);
-
 	public kiosk() {
-		super("핸드폰 번호로 등록하기");
-//
-//		JPanel pnlCard = new JPanel();
-//		pnlCard.setLayout(new BoxLayout(pnlCard, BoxLayout.Y_AXIS));
-//
-//		JPanel forLoginpnlBtns = new JPanel(new GridLayout(0, 3));
-//		JButton priceInfo = new JButton("이용안내");
-//		JButton forSeat = new JButton("좌석배치도");
-//
-//		ActionListener mainli = new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				// TODO Auto-generated method stub
-//				Object o = e.getSource();
-//				if (o == forSeat) {
-//					new SelectSeatFrame().setVisible(true);
-//
-//				} else if (o == priceInfo) {
-//					card.show(forContents, "first");
-//				}
-//
-//			}
-//		};
-//
-//		forSeat.addActionListener(mainli);
-//		priceInfo.addActionListener(mainli);
-//
-//		JButton forTicket = new JButton("정기권구매");
-//		forLoginpnlBtns.add(priceInfo);
-//		forLoginpnlBtns.add(forSeat);
-//		forLoginpnlBtns.add(forTicket);
-//
-//		add(pnlCard);
-//		pnlCard.add(forLoginpnlBtns);
-//		pnlCard.add(forContents);
-//
-//		JPanel forinfo = new JPanel();
-//		JLabel info = new JLabel(img1);
-//		forinfo.add(info);
-//
-//		forContents.add(forinfo, "first");
-//		ActionListener openLoginFrame = new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				new LoginFrame().setVisible(true);
-//			}
-//		};
-//////////////////////////////////// 좌석 배치도 패널 //////////////////////////////////
-////		JPanel selectSeat = new JPanel(new GridLayout(0, 2));
-////
-////		JPanel westpnl = new JPanel();
-////		westpnl.setLayout(new BoxLayout(westpnl, BoxLayout.Y_AXIS));
-////		JLabel studyZone = new JLabel("스터디존");
-////		JPanel studySeat = new JPanel(new GridLayout(0, 2));
-////		for (int i = 1; i < 9; i++) {
-////			String number = String.valueOf(i);
-////			JButton seat = new JButton(number);
-////			seat.addActionListener(openLoginFrame);
-////			studySeat.add(seat);
-////		}
-////		JPanel eastpnl = new JPanel();
-////		eastpnl.setLayout(new BoxLayout(eastpnl, BoxLayout.Y_AXIS));
-////
-////		JLabel workZone = new JLabel("워크존");
-////		JPanel workSeat = new JPanel(new GridLayout(0, 2));
-////		for (int i = 9; i < 17; i++) {
-////			String number = String.valueOf(i);
-////			JButton seat = new JButton(number);
-////			workSeat.add(seat);
-////			seat.addActionListener(openLoginFrame);
-////		}
-////
-////		westpnl.add(studyZone, "North");
-////		westpnl.add(studySeat, "Center");
-////
-////		eastpnl.add(workZone, "North");
-////		eastpnl.add(workSeat, "Center");
-////
-////		selectSeat.add(westpnl);
-////		selectSeat.add(eastpnl);
-////		forContents.add(selectSeat, "second");
-//
-///////////////////////////정기권 구매 패널 /////////////////////////////////
-//		JPanel sellTicket = new JPanel();
-//		forContents.add(sellTicket, "third");
+		super("YELLOW SUBMARINE STUDY CAFE");
 
 		setSize(800, 800);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -169,13 +79,13 @@ public class Main {
 
 			}
 		});
-		showRule.setBounds(51, 32, 105, 27);
+		showRule.setBounds(74, 32, 105, 27);
 		kiosk_.getContentPane().add(showRule);
 
 		JButton showSeat = new JButton("좌석 선택하기");
 		showSeat.setFont(new Font("HY견고딕", Font.PLAIN, 15));
 
-		showSeat.setBounds(306, 32, 135, 27);
+		showSeat.setBounds(331, 32, 135, 27);
 		kiosk_.getContentPane().add(showSeat);
 
 		JButton showTicket = new JButton("정기권 구매하기");
@@ -184,6 +94,14 @@ public class Main {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				selectedSeat.setText("0");
+				admit.setSelected(false);
+				if (sb.length() > 0 && arr.size() > 0) {
+					sb.delete(0, sb.length());
+					arr.removeAll(arr);
+					phonenumber.setText("-를 제외한 11자리 번호를 입력하세요");
+
+				}
 				card.show(panel, "fourth");
 
 			}
@@ -292,11 +210,6 @@ public class Main {
 		buyTicket.setBounds(256, 497, 153, 27);
 		ticketPnl.add(buyTicket);
 
-		JLabel selectedOption = new JLabel("");
-		selectedOption.setFont(new Font("HY견고딕", Font.BOLD, 22));
-		selectedOption.setBounds(251, 34, 158, 27);
-		ticketPnl.add(selectedOption);
-
 		JPanel Loginpnl = new JPanel();
 		panel.add(Loginpnl, "fourth");
 		Loginpnl.setLayout(null);
@@ -325,18 +238,30 @@ public class Main {
 
 					JOptionPane.showMessageDialog(null, "핸드폰 번호를 11자리 입력하세요");
 				} else if (sb.length() == 11) {
-
+// 해당하는 번호가 등록 된 번호인지 조회하는 것 
 					String a = mr.check(sb.toString());
-
+//선택한 자리에 등록된 번호인지 확인하는 것 
 					String b = mr.getPhoneNumber(selectedSeat.getText());
 					if (b == null) {
 
 						if (a == null) {
-							JOptionPane.showMessageDialog(null, "이용권을 구매하세요");
+							JOptionPane.showMessageDialog(null, "이용권 구매창으로 이동합니다");
 							Main.card.show(Main.panel, "third");
 							mem = new Member(sb.toString(), LocalDate.now().toString(), 0, 0);
-						} else {
-							mem = new Member(sb.toString(), LocalDate.now().toString(), 0, 0);
+						} else {// 다른 자리에 등록 된 번호라면
+							int seat = mr.checkMemberSeat(sb.toString());
+							mem = new Member(sb.toString(), LocalDate.now().toString(), 0, seat);
+
+							if (seat != 0) {
+								if (selectedSeat.getText().equals("0")) {
+
+									JOptionPane.showMessageDialog(null, "이미 이용중인 기간권이 있습니다");
+
+								} else {
+									JOptionPane.showMessageDialog(null,
+											seat + " 에서" + selectedSeat.getText() + " 로 자리 이동합니다.");
+								}
+							}
 							mem.setSeat(Integer.valueOf(selectedSeat.getText()));
 							mr.updateSeat(selectedSeat.getText(), sb.toString());
 							resetSeatPnl();
@@ -351,7 +276,8 @@ public class Main {
 								card.show(panel, "first");
 							}
 						} else if (!sb.toString().equals(b)) {
-							JOptionPane.showMessageDialog(null, "사용자의 번호가 틀렸습니다.");
+							JOptionPane.showMessageDialog(null, "해당 번호가 사용중인 좌석이 아닙니다.");
+							card.show(panel, "first");
 						}
 					}
 				}
@@ -438,6 +364,34 @@ public class Main {
 		deleteAll.addActionListener(li2);
 		delete.addActionListener(li2);
 		forLogin.setPreferredSize(new Dimension(400, -50));
+		
+		JPanel ticketLogin = new JPanel();
+		panel.add(ticketLogin, "fifth");
+		ticketLogin.setLayout(null);
+		
+		JLabel title = new JLabel("정기권 구매하기");
+		title.setBounds(50, 45, 62, 18);
+		ticketLogin.add(title);
+		
+		JRadioButton twow = new JRadioButton("2주권");
+		twow.setBounds(46, 122, 139, 27);
+		ticketLogin.add(twow);
+		
+		JRadioButton fourw = new JRadioButton("4주권");
+		fourw.setBounds(246, 122, 139, 27);
+		ticketLogin.add(fourw);
+		
+		JRadioButton twom = new JRadioButton("2개월 권");
+		twom.setBounds(460, 122, 139, 27);
+		ticketLogin.add(twom);
+		
+		JLabel lblNewLabel_1 = new JLabel("현재 남은 기간");
+		lblNewLabel_1.setBounds(50, 75, 62, 18);
+		ticketLogin.add(lblNewLabel_1);
+		
+		JButton btnNewButton = new JButton("정기권 구매하기");
+		btnNewButton.setBounds(267, 390, 105, 27);
+		ticketLogin.add(btnNewButton);
 
 		kiosk_.setVisible(true);
 		buyTicket.addActionListener(new ActionListener() {
@@ -484,10 +438,14 @@ public class Main {
 						// 로그아웃, 자리 이동 프레임 나오게 하기 ;
 					}
 					selectedSeat.setText(j.getText());
-					card.show(panel, "fourth");
-					admit.setSelected(false);
-					phonenumber.setText("-를 제외한 11자리 번호를 입력하세요");
 
+					admit.setSelected(false);
+					if (sb.length() > 0 && arr.size() > 0) {
+						sb.delete(0, sb.length());
+						arr.removeAll(arr);
+					}
+					phonenumber.setText("-를 제외한 11자리 번호를 입력하세요");
+					card.show(panel, "fourth");
 				}
 			});
 			workPnl.add(j);
@@ -508,9 +466,14 @@ public class Main {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					selectedSeat.setText(j.getText());
-					card.show(panel, "fourth");
 					admit.setSelected(false);
+					if (sb.length() > 0 && arr.size() > 0) {
+						sb.delete(0, sb.length());
+						arr.removeAll(arr);
+					}
 					phonenumber.setText("-를 제외한 11자리 번호를 입력하세요");
+					card.show(panel, "fourth");
+
 				}
 			});
 			studyPnl.add(j);
