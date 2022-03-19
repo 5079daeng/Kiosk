@@ -1,6 +1,13 @@
 # Kiosk
 
-ConnecrionProvider , main , memberRepository, Member 네개의 클래스로 구성되어 있다 
-Main에서 gui를 담당 
-memberRepository에서 mysql과 연동할 쿼리문을 다루는 메소드를 작성하였다
-Member 객체를 만들어 등록 수정 시 활용하였다 
+1.ConnecrionProvider , main , memberRepository, Member 네개의 클래스로 구성되어 있다 
+2.Main에서 gui를 담당 
+3.memberRepository에서 mysql과 연동할 쿼리문을 다루는 메소드를 작성하였다
+4.Member 객체를 만들어 등록 수정 시 활용하였다 
+
+2022-03-19 추가 수정 필요 항목
+1. 기간권 구매시 구매 확인창을 띄워 사용자가 구매 성공 여부를 확인할 수 있게 함 
+2. 기간권 연장시 연장된 기간을 확인할 수 있게 함
+3. 사용자가 핸드폰번호를 이용하여 자신의 이용 정보를 조회할 수 있게 함
+4. 관리자가 블랙리스트를 만들어 특정 사용자가 이용하지 못하도록 하는 기능도 고려 
+5. (해당하는 번호들이 담긴 배열을 만들고 새회원 등록시 ban하는 흐름으로 구상)
