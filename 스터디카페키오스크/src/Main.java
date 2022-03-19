@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -55,6 +57,7 @@ public class Main {
 	static JPanel workPnl;
 	static JPanel studyPnl;
 	static JLabel selectedSeat;
+	private static JTextField ticketphnum;
 
 	public static void main(String[] args) {
 		mr = new MemberRepository();
@@ -94,15 +97,8 @@ public class Main {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				selectedSeat.setText("0");
-				admit.setSelected(false);
-				if (sb.length() > 0 && arr.size() > 0) {
-					sb.delete(0, sb.length());
-					arr.removeAll(arr);
-					phonenumber.setText("-를 제외한 11자리 번호를 입력하세요");
 
-				}
-				card.show(panel, "fourth");
+				card.show(panel, "fifth");
 
 			}
 		});
@@ -218,8 +214,8 @@ public class Main {
 		selectedSeat.setBounds(36, 24, 90, 39);
 		Loginpnl.add(selectedSeat);
 
-		admit = new JCheckBox("이용약관에 동의하세요");
-		admit.setBounds(239, 36, 212, 27);
+		admit = new JCheckBox("카페 이용을 위한 개인정보 수집/이용/조회에 동의합니다");
+		admit.setBounds(132, 36, 407, 27);
 		Loginpnl.add(admit);
 
 		phonenumber = new JTextField("-를 제외한 11자리를 입력하세요");
@@ -247,20 +243,17 @@ public class Main {
 						if (a == null) {
 							JOptionPane.showMessageDialog(null, "이용권 구매창으로 이동합니다");
 							Main.card.show(Main.panel, "third");
-							mem = new Member(sb.toString(), LocalDate.now().toString(), 0, 0);
+
 						} else {// 다른 자리에 등록 된 번호라면
 							int seat = mr.checkMemberSeat(sb.toString());
-							mem = new Member(sb.toString(), LocalDate.now().toString(), 0, seat);
+							Member mem2 = mr.selectMember(sb.toString());
+							mem = new Member(mem2.getPhoneNumber(), mem2.getStartDate(), mem2.getLastDate(), seat);
 
 							if (seat != 0) {
-								if (selectedSeat.getText().equals("0")) {
 
-									JOptionPane.showMessageDialog(null, "이미 이용중인 기간권이 있습니다");
+								JOptionPane.showMessageDialog(null,
+										seat + " 에서" + selectedSeat.getText() + " 로 자리 이동합니다.");
 
-								} else {
-									JOptionPane.showMessageDialog(null,
-											seat + " 에서" + selectedSeat.getText() + " 로 자리 이동합니다.");
-								}
 							}
 							mem.setSeat(Integer.valueOf(selectedSeat.getText()));
 							mr.updateSeat(selectedSeat.getText(), sb.toString());
@@ -364,33 +357,116 @@ public class Main {
 		deleteAll.addActionListener(li2);
 		delete.addActionListener(li2);
 		forLogin.setPreferredSize(new Dimension(400, -50));
-		
+
 		JPanel ticketLogin = new JPanel();
 		panel.add(ticketLogin, "fifth");
 		ticketLogin.setLayout(null);
-		
-		JLabel title = new JLabel("정기권 구매하기");
-		title.setBounds(50, 45, 62, 18);
-		ticketLogin.add(title);
-		
-		JRadioButton twow = new JRadioButton("2주권");
-		twow.setBounds(46, 122, 139, 27);
-		ticketLogin.add(twow);
-		
-		JRadioButton fourw = new JRadioButton("4주권");
-		fourw.setBounds(246, 122, 139, 27);
-		ticketLogin.add(fourw);
-		
-		JRadioButton twom = new JRadioButton("2개월 권");
-		twom.setBounds(460, 122, 139, 27);
-		ticketLogin.add(twom);
-		
-		JLabel lblNewLabel_1 = new JLabel("현재 남은 기간");
-		lblNewLabel_1.setBounds(50, 75, 62, 18);
-		ticketLogin.add(lblNewLabel_1);
-		
+
+		JCheckBox checkinfo = new JCheckBox("카페 이용을 위한 개인정보 수집/이용/조회에 동의합니다");
+		checkinfo.setBounds(148, 47, 390, 27);
+		ticketLogin.add(checkinfo);
+
+		ticketphnum = new JTextField();
+		ticketphnum.setBounds(148, 109, 390, 27);
+		ticketLogin.add(ticketphnum);
+		ticketphnum.setColumns(10);
+
+		JPanel forLogin2 = new JPanel(new GridLayout(0, 3, 10, 10));
+		forLogin2.setBounds(121, 207, 437, 307);
+		ticketLogin.add(forLogin2);
+
+		for (int i = 1; i < 10; i++) {
+			String number = String.valueOf(i);
+			JButton numberbtn = new JButton(number);
+
+			ActionListener li = new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (!checkinfo.isSelected()) {
+
+						JOptionPane.showMessageDialog(null, "이용약관을 먼저 확인하세요 ");
+					} else {
+						Object o = e.getSource();
+						arr.add(Integer.valueOf(number));
+
+						sb.append(Integer.valueOf(number));
+
+						if (sb.length() == 12) {
+							JOptionPane.showMessageDialog(null, "11자리를 입력하세요");
+							sb.setLength(sb.length() - 1);
+							arr.remove(arr.size() - 1);
+						}
+						ticketphnum.setText(sb.toString());
+					}
+
+				}
+			};
+			numberbtn.addActionListener(li);
+			forLogin2.add(numberbtn);
+		}
+		JButton deleteAll2 = new JButton("X");
+		JButton zero2 = new JButton("0");
+		JButton delete2 = new JButton("←");
+		forLogin2.setLayout(new GridLayout(0, 3, 0, 0));
+		forLogin2.add(deleteAll2);
+		forLogin2.add(zero2);
+		forLogin2.add(delete2);
+		ActionListener li3 = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!checkinfo.isSelected()) {
+
+					JOptionPane.showMessageDialog(null, "이용약관을 먼저 확인하세요 ");
+				} else {
+					Object o = e.getSource();
+					if (o == zero2) {
+						arr.add(0);
+
+						sb.append(0);
+					} else if (o == deleteAll2) {
+						sb.delete(0, sb.length());
+						arr.removeAll(arr);
+						System.out.println(arr);
+					} else if (o == delete2) {
+						sb.delete(sb.length() - 1, sb.length());
+						arr.remove(arr.size() - 1);
+						System.out.println(arr);
+					}
+
+					if (sb.length() == 12) {
+						JOptionPane.showMessageDialog(null, "11자리를 입력하세요");
+						sb.setLength(sb.length() - 1);
+						arr.remove(arr.size() - 1);
+					}
+					ticketphnum.setText(sb.toString());
+				}
+
+			}
+		};
+		zero2.addActionListener(li3);
+		deleteAll2.addActionListener(li3);
+		delete2.addActionListener(li3);
+		forLogin2.setPreferredSize(new Dimension(400, -50));
+
 		JButton btnNewButton = new JButton("정기권 구매하기");
-		btnNewButton.setBounds(267, 390, 105, 27);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				String number = mr.check(ticketphnum.getText());
+				if (number == null) {
+					mem = new Member(ticketphnum.getText(), LocalDate.now().toString(), null, 0);
+					card.show(panel, "third");
+				} else {
+					Member mem2 = mr.selectMember(ticketphnum.getText());
+					mem = new Member(mem2.getPhoneNumber(), mem2.getStartDate(), mem2.getLastDate(), mem2.getSeat());
+					card.show(panel, "third");
+				}
+
+			}
+		});
+		btnNewButton.setBounds(302, 543, 105, 27);
 		ticketLogin.add(btnNewButton);
 
 		kiosk_.setVisible(true);
@@ -398,15 +474,28 @@ public class Main {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (twoWeeks.isSelected()) {
-					mem.setTicketPeriod(14);
-				} else if (month.isSelected()) {
-					mem.setTicketPeriod(28);
-				} else if (twoMonth.isSelected()) {
-					mem.setTicketPeriod(56);
+				System.out.println("확인" + mr.selectMember(mem.getPhoneNumber()));
+				if (mr.selectMember(mem.getPhoneNumber()) == null) {
+					if (twoWeeks.isSelected()) {
+						mem.setLastDate(((LocalDate.now()).plusDays(14)).toString());
+					} else if (month.isSelected()) {
+						mem.setLastDate(((LocalDate.now()).plusDays(28)).toString());
+					} else if (twoMonth.isSelected()) {
+						mem.setLastDate(((LocalDate.now()).plusDays(56)).toString());
+					}
+
+					mr.joinMember(mem);
+				} else {
+					if (twoWeeks.isSelected()) {
+						mr.oldupdateTicketPeriod(14, mem.getPhoneNumber());
+					} else if (month.isSelected()) {
+						mr.oldupdateTicketPeriod(28, mem.getPhoneNumber());
+					} else if (twoMonth.isSelected()) {
+						mr.oldupdateTicketPeriod(56, mem.getPhoneNumber());
+					}
+
 				}
-				MemberRepository mr = new MemberRepository();
-				mr.joinMember(mem);
+
 				card.show(panel, "second");
 				resetSeatPnl();
 

@@ -30,29 +30,34 @@ import com.mysql.cj.protocol.Resultset;
 
 public class MemberRepository {
 
-	public void selectMember(String s) {
+	public Member selectMember(String s) {
 		String query = "Select * from member where PhoneNumber = ? ";
+		Member member = null;
 		try (Connection conn = ConnectionProvider.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);) {
 			stmt.setString(1, s);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				String phonNumber = rs.getString("PhoneNumber");
-				String date = rs.getString("StartDate");
-				int ticket = rs.getInt("ticket_Period");
-				System.out.println(date);
+				String phoneNumber = rs.getString("PhoneNumber");
+				String startDate = rs.getString("StartDate");
+				String lastDate = rs.getString("lastDate");
+				int seat = rs.getInt("selectedSeat");
+				member = new Member(phoneNumber, startDate, lastDate, seat);
 			}
 
+			return member;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		return member;
 	}
 
 	public int joinMember(Member m) {
 
-		String query = "insert into member (PhoneNumber, Startdate ,ticket_Period, selectedSeat )"
+		String query = "insert into member (PhoneNumber, Startdate ,lastDate, selectedSeat )"
 				+ " values(? ,now() ,?,?);";
 
 		int result = 0;
@@ -60,7 +65,7 @@ public class MemberRepository {
 
 		) {
 			ps.setString(1, m.getPhoneNumber());
-			ps.setInt(2, m.getTicketPeriod());
+			ps.setString(2, m.getLastDate());
 			ps.setInt(3, m.getSeat());
 
 			result = ps.executeUpdate();
@@ -167,26 +172,52 @@ public class MemberRepository {
 
 	}
 
-	public int checkTicket(String phoneNumber) {
-		String query = "select ticket_period from member where phonenumber = ?";
-		int length = 0;
+	public String checkTicket(String phoneNumber) {
+		String query = "select lastDate from member where phonenumber = ?";
+		String lastDate = null;
 		try (Connection conn = ConnectionProvider.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(query);) {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				length = rs.getInt("ticket_period");
+				lastDate = rs.getString("lastDate");
 
 			}
-			return length;
+			return lastDate;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return length;
+		return lastDate;
 
 	}
 
 	public void deleteMember() {
 		String query = "delete * from memeber where ((select dateDiff(select DATE_ADD(startdate, INTERVAL ticket_Period DAY) , now())) < 0 );";
 	}
+
+	public void newUpdateTicketPeriod(int days) {
+		String query = "update member set lastDate = (DATE_ADD(startdate, INTERVAL ? DAY)) ";
+		try (Connection conn = ConnectionProvider.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(query);) {
+			stmt.setInt(1, days);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void oldupdateTicketPeriod(int days, String phoneNumber) {
+		String query = "update member set lastDate = (DATE_ADD(lastdate, INTERVAL ? DAY)) where phoneNumber = ? ";
+		try (Connection conn = ConnectionProvider.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(query);) {
+			stmt.setInt(1, days);
+			stmt.setString(2, phoneNumber);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
