@@ -243,6 +243,7 @@ public class Main {
 						if (a == null) {
 							JOptionPane.showMessageDialog(null, "이용권 구매창으로 이동합니다");
 							Main.card.show(Main.panel, "third");
+							mem = new Member(sb.toString(), LocalDate.now().toString(), null, 0);
 
 						} else {// 다른 자리에 등록 된 번호라면
 							int seat = mr.checkMemberSeat(sb.toString());
