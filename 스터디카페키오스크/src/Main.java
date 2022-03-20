@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -475,17 +477,23 @@ public class Main {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				System.out.println("확인" + mr.selectMember(mem.getPhoneNumber()));
+				System.out.println(("확인" + (LocalDate.now()).plusDays(14)));
 				if (mr.selectMember(mem.getPhoneNumber()) == null) {
 					if (twoWeeks.isSelected()) {
-						mem.setLastDate(((LocalDate.now()).plusDays(14)).toString());
+						mem.setLastDate(LocalDateTime.now().plusDays(14)
+								.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString());
 					} else if (month.isSelected()) {
-						mem.setLastDate(((LocalDate.now()).plusDays(28)).toString());
+						mem.setLastDate(LocalDateTime.now().plusDays(28)
+								.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString());
 					} else if (twoMonth.isSelected()) {
-						mem.setLastDate(((LocalDate.now()).plusDays(56)).toString());
+						mem.setLastDate(LocalDateTime.now().plusDays(56)
+								.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString());
 					}
 
 					mr.joinMember(mem);
+					new memberInfo(mem).setVisible(true);
 				} else {
 					if (twoWeeks.isSelected()) {
 						mr.oldupdateTicketPeriod(14, mem.getPhoneNumber());
@@ -494,6 +502,7 @@ public class Main {
 					} else if (twoMonth.isSelected()) {
 						mr.oldupdateTicketPeriod(56, mem.getPhoneNumber());
 					}
+					new memberInfo(mem).setVisible(true);
 
 				}
 
