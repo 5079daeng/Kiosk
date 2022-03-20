@@ -475,6 +475,7 @@ public class Main {
 		kiosk_.setVisible(true);
 		buyTicket.addActionListener(new ActionListener() {
 
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
