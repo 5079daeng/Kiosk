@@ -84,13 +84,13 @@ public class Main {
 
 			}
 		});
-		showRule.setBounds(74, 32, 105, 27);
+		showRule.setBounds(51, 32, 105, 27);
 		kiosk_.getContentPane().add(showRule);
 
 		JButton showSeat = new JButton("좌석 선택하기");
 		showSeat.setFont(new Font("HY견고딕", Font.PLAIN, 15));
 
-		showSeat.setBounds(331, 32, 135, 27);
+		showSeat.setBounds(205, 32, 135, 27);
 		kiosk_.getContentPane().add(showSeat);
 
 		JButton showTicket = new JButton("정기권 구매하기");
@@ -99,12 +99,16 @@ public class Main {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				if (sb.length() > 0 && arr.size() > 0) {
+					sb.delete(0, sb.length());
+					arr.removeAll(arr);
+				}
+				ticketphnum.setText("-를 제외한 11자리 번호를 입력하세요");
 				card.show(panel, "fifth");
 
 			}
 		});
-		showTicket.setBounds(577, 32, 149, 27);
+		showTicket.setBounds(392, 32, 149, 27);
 		kiosk_.getContentPane().add(showTicket);
 
 		JPanel rule = new JPanel();
@@ -114,7 +118,7 @@ public class Main {
 		panel.add(rule, "first");
 
 		JPanel seatPnl = new JPanel();
-
+		System.out.println(seatPnl.getSize());
 		seatPnl.setBackground(Color.WHITE);
 		panel.add(seatPnl, "second");
 		seatPnl.setLayout(null);
@@ -374,6 +378,8 @@ public class Main {
 		ticketLogin.add(ticketphnum);
 		ticketphnum.setColumns(10);
 
+		panel.add(new checkFrame().panel, "sixth");
+
 		JPanel forLogin2 = new JPanel(new GridLayout(0, 3, 10, 10));
 		forLogin2.setBounds(121, 207, 437, 307);
 		ticketLogin.add(forLogin2);
@@ -472,10 +478,24 @@ public class Main {
 		btnNewButton.setBounds(302, 543, 105, 27);
 		ticketLogin.add(btnNewButton);
 
+		JButton checkmember = new JButton("이용정보 조회");
+		checkmember.setFont(new Font("HY견고딕", Font.PLAIN, 15));
+		checkmember.setBounds(581, 32, 130, 27);
+		kiosk_.getContentPane().add(checkmember);
+		checkmember.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				card.show(panel, "sixth");
+			}
+		});
+		JButton master = new JButton("관리자 로그인");
+		master.setBounds(652, 714, 105, 27);
+		kiosk_.getContentPane().add(master);
+
 		kiosk_.setVisible(true);
 		buyTicket.addActionListener(new ActionListener() {
 
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -552,7 +572,6 @@ public class Main {
 
 		}
 		studyPnl.removeAll();
-		studyPnl.revalidate();
 		studyPnl.revalidate();
 		for (int i = 9; i < 31; i++) {
 			JButton j = new JButton(String.valueOf(i));
